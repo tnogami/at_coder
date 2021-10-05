@@ -1,0 +1,6 @@
+N = int(input())
+A = list(map(int,input().split()))
+a = max(A[0:2**(N-1)])
+b = max(A[2**(N-1):])
+r = min(a,b)
+print(A.index(r)+1)
