@@ -226,6 +226,45 @@ def dijkstra(s, n): # (始点, ノード数)
     return dist
 
 #====================================================================================
+#グリットのダイクストラ法
+from heapq import heappush, heappop
+INF = 10 ** 12
+
+#移動コストcを引数にして、ゴールまでの最短距離をダイクストラ法で求める。
+def dijkstra(c):
+    dist = [[INF]*W for i in range(H)]
+    seen = [[False]*W for i in range(H)]
+    dx = (1, 0, -1, 0)
+    dy = (0, 1, 0, -1)
+    hq = [(0, (sx, sy))] # (distance, node)
+    dist[sy][sx] = 0
+    while hq:
+        _sx, _sy = heappop(hq)[1] # ノードを pop する
+        seen[_sy][_sx] = True
+        for k in range(4):
+            new_sx = _sx + dx[k]
+            new_sy = _sy + dy[k]
+            if new_sx < 0 or W <= new_sx or new_sy < 0 or H <= new_sy: continue
+            if field[new_sy][new_sx] == "#":
+                cost = c
+            else:
+                cost = 1
+            if seen[new_sy][new_sx] == False and dist[_sy][_sx] + cost < dist[new_sy][new_sx]:
+                dist[new_sy][new_sx] = dist[_sy][_sx] + cost
+                heappush(hq, (dist[new_sy][new_sx], (new_sx, new_sy)))
+    return dist[gy][gx]
+
+#入力
+H, W, T = map(int, input().split())
+field = [input() for i in range(H)]
+
+#スタートとゴールの座標の確認
+for i in range(H):
+    for j in range(W):
+        if field[i][j] == "S": sx,sy = j,i
+        if field[i][j] == "G": gx,gy = j,i
+
+#====================================================================================
 
 #因数分解
 def prime_factorize(n):
@@ -413,6 +452,149 @@ seg.update(i, a) #i番目の要素をaに更新
 seg.query(0,N) #区間最大公約数など
 
 #====================================================================================
+#平衡二分探索木
+#L = 2**Kとして、0~L-2までの値を扱える
+#find_rのRootはL-1を返す
+
+class BalancingTree:
+    def __init__(self, n):
+        self.N = n
+        self.root = self.node(1<<n, 1<<n)
+
+    def append(self, v):# v を追加（その時点で v はない前提）
+        v += 1
+        nd = self.root
+        while True:
+            if v == nd.value:
+                # v がすでに存在する場合に何か処理が必要ならここに書く
+                return 0
+            else:
+                mi, ma = min(v, nd.value), max(v, nd.value)
+                if mi < nd.pivot:
+                    nd.value = ma
+                    if nd.left:
+                        nd = nd.left
+                        v = mi
+                    else:
+                        p = nd.pivot
+                        nd.left = self.node(mi, p - (p&-p)//2)
+                        break
+                else:
+                    nd.value = mi
+                    if nd.right:
+                        nd = nd.right
+                        v = ma
+                    else:
+                        p = nd.pivot
+                        nd.right = self.node(ma, p + (p&-p)//2)
+                        break
+
+    def leftmost(self, nd):
+        if nd.left: return self.leftmost(nd.left)
+        return nd
+
+    def rightmost(self, nd):
+        if nd.right: return self.rightmost(nd.right)
+        return nd
+
+    def find_l(self, v): # vより真に小さいやつの中での最大値（なければ-1）
+        v += 1
+        nd = self.root
+        prev = 0
+        if nd.value < v: prev = nd.value
+        while True:
+            if v <= nd.value:
+                if nd.left:
+                    nd = nd.left
+                else:
+                    return prev - 1
+            else:
+                prev = nd.value
+                if nd.right:
+                    nd = nd.right
+                else:
+                    return prev - 1
+
+    def find_r(self, v): # vより真に大きいやつの中での最小値（なければRoot）
+        v += 1
+        nd = self.root
+        prev = 0
+        if nd.value > v: prev = nd.value
+        while True:
+            if v < nd.value:
+                prev = nd.value
+                if nd.left:
+                    nd = nd.left
+                else:
+                    return prev - 1
+            else:
+                if nd.right:
+                    nd = nd.right
+                else:
+                    return prev - 1
+
+    @property
+    def max(self):
+        return self.find_l((1<<self.N)-1)
+
+    @property
+    def min(self):
+        return self.find_r(-1)
+
+    def delete(self, v, nd = None, prev = None): # 値がvのノードがあれば削除（なければ何もしない）
+        v += 1
+        if not nd: nd = self.root
+        if not prev: prev = nd
+        while v != nd.value:
+            prev = nd
+            if v <= nd.value:
+                if nd.left:
+                    nd = nd.left
+                else:
+                    #####
+                    return
+            else:
+                if nd.right:
+                    nd = nd.right
+                else:
+                    #####
+                    return
+        if (not nd.left) and (not nd.right):
+            if not prev.left:
+                prev.right = None
+            elif not prev.right:
+                prev.left = None
+            else:
+                if nd.pivot == prev.left.pivot:
+                    prev.left = None
+                else:
+                    prev.right = None
+
+        elif nd.right:
+            # print("type A", v)
+            nd.value = self.leftmost(nd.right).value
+            self.delete(nd.value - 1, nd.right, nd)    
+        else:
+            # print("type B", v)
+            nd.value = self.rightmost(nd.left).value
+            self.delete(nd.value - 1, nd.left, nd)
+
+    def __contains__(self, v: int) -> bool:
+        return self.find_r(v - 1) == v
+
+    class node:
+        def __init__(self, v, p):
+            self.value = v
+            self.pivot = p
+            self.left = None
+            self.right = None
+    
+Q = int(input())
+N = 2**20
+A = [-1]*N
+BT = BalancingTree(20) # 0 ～ 2**20 までの要素を入れられるピボット木
+
+
 #====================================================================================
 #====================================================================================
 #====================================================================================
