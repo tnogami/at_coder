@@ -126,6 +126,25 @@ for left in range(N):
 
 print(ans)
 
+#和がK以下となる区間で最長のものを求める
+right = 0
+amount = 0
+ans = 0
+for left in range(N):
+    while right < N and amount + S[right] <= K :#和がKになるまで、rightを右にずらしていく
+        amount += S[right]
+        right += 1
+    
+    #rightが行き詰まったので、最大値を更新
+    ans = max(ans, right - left)
+ 
+    if right == left:#left loopがrightにまで来たらrightを右に一つずらす　
+        right += 1
+    else: #次のループでleftが一つ進むので、最後尾の数で割っておく
+        amount -= S[left]
+
+print(ans)
+
 #====================================================================================
 
 #Union-Find木
