@@ -1,16 +1,27 @@
-MOD = 998244353
-N = int(input())
-digit = len(str(N))
-ans = 0
-for i in range(1, N):
-    ans += ((1+int("9"+"0"*(i-1)))*9*10**(i-1))//2
-    ans %= MOD
+import sys
+sys.setrecursionlimit(10**9)
+def dfs(n):
+    visited[n] = True
 
-m = 10**(digit-1)
-n = N - m + 1
-M = (n+1)*n//2
-M %= MOD
+    for to in nodes[n]:
+        if visited[to] : continue
+        dfs(to)
 
-ans += M
 
-print(ans%MOD)
+N, Q = map(int, input().split())
+nodes = [[] for _ in range(N+1)]
+for _ in range(Q):
+   l, r = map(int, input().split())
+   nodes[l-1].append(r)
+   nodes[r].append(l-1)
+
+visited = [False]*(N+1)
+
+dfs(0)
+
+if visited[N]:
+    print("Yes")
+else:
+    print("No")
+
+
