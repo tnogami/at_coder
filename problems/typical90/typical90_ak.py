@@ -76,7 +76,7 @@ class SegTree:
         
 W, N = map(int, input().split())
 
-A = [-float("inf")]*(W+1)
+A = [-1]*(W+1)
 seg = SegTree(A, segfunc, ide_ele)
 dp = [[-1]*(W+1) for _ in range(N+1)]
 dp[0][0] = 0
