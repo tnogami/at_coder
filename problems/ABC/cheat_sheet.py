@@ -754,6 +754,22 @@ class SortedMultiset(Generic[T]):
 
 
 #====================================================================================
+#1次元座標圧縮
+
+N = map(int, input().split())
+X = list(map(int, input().split()))
+
+# 集合型にすることで重複を除去し、
+# 小さい順にソートする
+X_sorted = sorted(set(X))
+
+# B の各要素が何番目の要素なのかを辞書型で管理する
+Dx = { v: i for i, v in enumerate(X_sorted) } 
+
+# 答え
+print([Dx[x] for x in X])
+
+#====================================================================================
 #2次元座標圧縮
 
 N = map(int, input().split())
