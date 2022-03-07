@@ -5,7 +5,7 @@ for _ in range(Q):
     t, k = map(int, input().split())
     k -= 1
 
-    #このアルファベットから生成
+    #このアルファベットから生成される
     C = S[k//pow(2, min(t, 60))]
     n = "ABC".index(C)
 
@@ -16,16 +16,6 @@ for _ in range(Q):
         if loop == t:break
         ct += int(b)
         loop += 1
-    
-    ans = n + t + ct
-    print("ABC"[ans%3])
-    
 
-
-
-
-
-
-    
-
-
+    n += t + ct
+    print("ABC"[n%3])
