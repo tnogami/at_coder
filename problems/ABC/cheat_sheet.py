@@ -224,6 +224,21 @@ for k in range(N):
         for j in range(N):
             dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j])
 
+
+#経路復元
+
+def restore_path(start,end):
+    p = []
+    cur = start
+    while (cur != end):
+        for i in range(N):
+            if i != cur and dist_old[cur][i] + dist[i][end] == dist[cur][end]:
+                cur = i
+                p.append(i)
+                break
+
+    return p
+
 #====================================================================================
 
 #ダイクストラ法
