@@ -226,12 +226,16 @@ for k in range(N):
 
 
 #経路復元
-
+#dist_oldは最短経路計算前のグラフ
 def restore_path(start,end):
     p = []
     cur = start
     while (cur != end):
         for i in range(N):
+            #(curr)---h[curr][i]---(i)---g[i][end]---(end)
+            #と
+            #(curr)-----------g[curr][end]-----------(end)
+            #が一致すれば、iは最短経路に含まれる頂点である
             if i != cur and dist_old[cur][i] + dist[i][end] == dist[cur][end]:
                 cur = i
                 p.append(i)
@@ -867,6 +871,47 @@ def dim2imos(A:list) -> list:
     return ret
     
 #====================================================================================
+
+#ローマ数字から数値への変換
+d = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        ret = 0
+        pre = -1
+        for c in s[::-1]:
+            if d[c] < pre:
+                ret -= d[c]
+            else:
+                ret += d[c]
+            pre = d[c]
+        return ret
+
+#数字からローマ数字への変換
+d = {1:'I', 5:'V', 10:'X', 50:'L', 100:'C', 500:'D', 1000:'M'}
+
+class Solution:
+    def intToRoman(self, num: int) -> str:
+        ret = []
+        num = str(num)
+        for i,n in enumerate(num[::-1]):
+            n = int(n)
+            m = n * 10**i
+            if n == 9:
+                c = d[10**i]+d[10**(i+1)]
+            elif 5 <= n:
+                c = d[5*10**i]+d[10**i]*(n-5)
+            elif n == 4:
+                c = d[10**i]+d[(n+1)*10**i]
+            else:
+                c = d[10**i]*n
+           
+            ret.append(c)
+               
+        return "".join(ret[::-1])
+
+
+
 #====================================================================================
 #====================================================================================
 #====================================================================================
