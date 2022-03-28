@@ -910,9 +910,56 @@ class Solution:
                
         return "".join(ret[::-1])
 
-
-
 #====================================================================================
+# 強連結成分分解
+def SCC(N, G):
+    
+    def reversed_g():
+        ret = [[] for _ in range(N)]
+        for i, g in enumerate(G):
+            for to in g:
+                ret[to].append(i)
+        return ret
+   
+    def dfs(i):
+        seen[i] = True
+        for to in G[i]:
+            if seen[to] : continue
+            dfs(to)
+        visited_order.append(i)
+
+    def r_dfs(i):
+        seen[i] = True
+        group.append(i)
+        for to in r_G[i]:
+            if seen[to] : continue
+            r_dfs(to)
+
+    seen = [False]*N
+    visited_order = []
+    for i in range(N):
+        if not seen[i]:
+            dfs(i)
+            
+    print(visited_order)
+
+    ret = []
+    seen = [False]*N
+    r_G = reversed_g()
+    print(r_G)
+    for i in visited_order[::-1]:
+        if not seen[i]:
+            group = []
+            r_dfs(i)
+            print(seen)
+            print(group)
+            ret.append(group)
+
+    return ret
+
+G = [[1],[2],[3],[4,5],[1],[6],[8],[6],[7]]
+N = 9
+SCC(9,G) #[[0], [1, 4, 3, 2], [5], [6, 7, 8]]
 #====================================================================================
 #====================================================================================
 #====================================================================================
