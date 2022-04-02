@@ -912,14 +912,12 @@ class Solution:
 
 #====================================================================================
 # 強連結成分分解
-def SCC(N, G):
-    
-    def reversed_g():
-        ret = [[] for _ in range(N)]
-        for i, g in enumerate(G):
-            for to in g:
-                ret[to].append(i)
-        return ret
+from collections import defaultdict
+def SCC(N, G, rG):
+    group_num = 0
+    visited_order = []
+    group = defaultdict(int)
+    groups = []
    
     def dfs(i):
         seen[i] = True
@@ -930,36 +928,40 @@ def SCC(N, G):
 
     def r_dfs(i):
         seen[i] = True
-        group.append(i)
-        for to in r_G[i]:
+        s.append(i)
+        group[i] = group_num
+        for to in rG[i]:
             if seen[to] : continue
             r_dfs(to)
 
     seen = [False]*N
-    visited_order = []
     for i in range(N):
         if not seen[i]:
             dfs(i)
-            
-    print(visited_order)
 
-    ret = []
     seen = [False]*N
-    r_G = reversed_g()
-    print(r_G)
     for i in visited_order[::-1]:
         if not seen[i]:
-            group = []
+            s = []
             r_dfs(i)
-            print(seen)
-            print(group)
-            ret.append(group)
+            groups.append(s)
+            group_num += 1
 
-    return ret
+    ret_G = [set([]) for _ in range(group_num)]
+    for i in range(N):
+        frm = group[i]
+        for to in G[i]:
+            if frm == group[to] : continue
+            ret_G[frm].add(group[to])
 
-G = [[1],[2],[3],[4,5],[1],[6],[8],[6],[7]]
+    return groups, ret_G
+
+G = [[1],[2],[3,5,8],[4,5],[1],[6],[8],[6],[7]]
 N = 9
-SCC(9,G) #[[0], [1, 4, 3, 2], [5], [6, 7, 8]]
+groups, graph = SCC(9,G)
+print(groups)
+print(graph)
+
 #====================================================================================
 #====================================================================================
 #====================================================================================
