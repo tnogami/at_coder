@@ -145,6 +145,23 @@ for left in range(N):
 
 print(ans)
 
+# deque版尺取法
+from collections import deque
+ans = 0
+q = deque()
+p = 1  ## 今、見ている区間の要素の積をpで管理する。
+for c in a:
+    q.append(c)  ## dequeの"右端"に要素を一つ追加する。
+    p *= c
+
+    while q and p > k: ## 要素の積がKを超えているか？
+        rm = q.popleft() ## 条件を満たさないのでdequeの"左端"から要素を取り除く
+        p //= rm ## 取り除いた値に応じて要素の積を更新する
+
+    ans = max(ans, len(q)) ## dequeに入っている要素の積がK以下になるまで区間を縮めた。
+
+print(ans)
+
 #====================================================================================
 
 #Union-Find木
