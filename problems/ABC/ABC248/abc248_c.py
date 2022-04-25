@@ -11,6 +11,5 @@ for i in range(N):
             dp[i+1][k+m] += dp[i][k]
             dp[i+1][k+m] %= MOD
 
-# print(dp[N])
-print((dp[N][-1])%MOD)
+print(sum(dp[N])%MOD)
 
