@@ -9,12 +9,11 @@ if [ ! -e ${test_dir} ]; then
     oj dl -d test/${problem_name} https://atcoder.jp/contests/${base_url}/tasks/${problem_name}
 fi
 
-echo ${which_python}
-echo pypy3
-
-if [${which_python} == "python3"] ; then
+if [ "$which_python" = "python3" ]; then
+    echo python
     oj test -c "python3 ${problem_path}/${problem_name}.py" -d test/${problem_name}
-elif [${which_python} == pypy3] ; then
+elif [ "$which_python" = "pypy3" ]; then
+    echo pypy
     oj test -c "pypy3 ${problem_path}/${problem_name}.py" -d test/${problem_name}
 else
     echo None
