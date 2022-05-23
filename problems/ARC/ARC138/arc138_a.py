@@ -5,22 +5,19 @@ A = list(map(int,input().split()))
 left = A[:K]
 right = A[K:]
 
-s = sum(left)
-
-right = [(n,i) for i, n in enumerate(right)]
-right.sort(key=lambda x:x[1])
-right.sort()
-B = list(map(lambda x : x[0], right))
-
-ans = len(A) + 10
-for i, n in enumerate(left):
-    idx = bisect.bisect(B, n)
-    if N-K <= idx: continue
-    ans = min(K-1-i+right[idx][1]+1, ans)
-
-if ans == len(A) + 10:
+if max(right) <= min(left):
     print(-1)
 else:
+    m = 0
+    tmp = []
+    for n in right:
+        if m < n:m = n
+        tmp.append(m)
+
+    ans = 10**15
+    for i, n in enumerate(left):
+        idx = bisect.bisect(tmp, n)
+        if N-K <= idx: continue
+        ans = min(K-i+idx, ans)
+
     print(ans)
-
-

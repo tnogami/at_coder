@@ -1,27 +1,24 @@
 N = int(input())
 T = list(map(int,input().split()))
 
-upper_bit = -1
-lower_bit = 0
-val = 0
 A = []
+a = 0
 
 for t in T:
-    if upper_bit < t:
-        val = int("1"+"0"*t, 2)
-        upper_bit = t
-        lower_bit = t
-    elif bit == t:
-        tmp = int("1"+"0"*(t+1), 2)
-        val |= tmp
+    b = 2**t
+    if a < b:
+        A.append(b)
+        a = b
     else:
-        tmp = int("1"+"0"*t, 2)
-        val |= tmp
-        bit = t
-    A.append(val)
-
-print(A)
-print(val)
-
-
-
+        for i in range(t):
+            a = a >> 1
+        for i in range(t):
+            a = a << 1
+        tmp = a + b
+        if bin(tmp)[-(t+1)] == "1":
+            A.append(tmp)
+            a = tmp
+        else:
+            A.append(tmp+b)        
+            a = tmp+b
+print(A[-1])

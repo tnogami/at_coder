@@ -267,20 +267,41 @@ def restore_path(start,end):
 #ダイクストラ法
 adj = []
 from heapq import heappush, heappop
-INF = 10 ** 9
+INF = 10 ** 21
 def dijkstra(s, n): # (始点, ノード数)
     dist = [INF] * n
     hq = [(0, s)] # (distance, node)
     dist[s] = 0
     seen = [False] * n # ノードが確定済みかどうか
     while hq:
-        v = heappop(hq)[1] # ノードを pop する
+        cost, v = heappop(hq) # ノードを pop する
+        if seen[v] : continue
         seen[v] = True
+        if dist[v] < cost:
+            continue
         for to, cost in adj[v]: # ノード v に隣接しているノードに対して
             if seen[to] == False and dist[v] + cost < dist[to]:
                 dist[to] = dist[v] + cost
                 heappush(hq, (dist[to], to))
     return dist
+
+import heapq
+
+def dijkstra(s, n, c_list):
+    _list = [float("Inf")]*n
+    _list[s] = 0
+    hq = [[0,s]]
+    heapq.heapify(hq)
+    while len(hq) > 0:
+        _ci, _i = heapq.heappop(hq)
+        if _list[_i] < _ci:
+            continue
+        # ここに来たらノード_iまでのコストは確定
+        for _cj,_j in c_list[_i]:
+            if _list[_j] > (_list[_i] + _cj):
+                _list[_j] = _list[_i] + _cj
+                heapq.heappush(hq, [_list[_j],_j])
+    return _list
 
 #====================================================================================
 #グリットのダイクストラ法
@@ -297,6 +318,7 @@ def dijkstra(c):
     dist[sy][sx] = 0
     while hq:
         _sx, _sy = heappop(hq)[1] # ノードを pop する
+        if seen[_sy][_sx]:continue
         seen[_sy][_sx] = True
         for k in range(4):
             new_sx = _sx + dx[k]
