@@ -45,11 +45,11 @@ print(dist)
 #====================================================================================
 
 #幅優先探索(グリッド)
-import queue
+from collections import deque
 
 Nx, Ny = map(int, input().split())
 dist = [[-1 for i in range(Nx)] for j in range(Ny)] #距離
-que = queue.Queue()
+dq = deque()
 dx = (0,1,0,-1)
 dy = (1,0,-1,0)
 
@@ -57,12 +57,12 @@ dy = (1,0,-1,0)
 field = [input() for j in range(Ny)]
 
 # 始点の設定
-que.put((0,0))
+dq.append((0,0))
 dist[0][0] = 0
 
 #キューが無くなるまでループ
-while not que.empty():
-    cur_y, cur_x = que.get()
+while dq:
+    cur_y, cur_x = dq.popleft()
 
     for k in range(4):
         next_y, next_x = cur_y+dy[k], cur_x+dx[k]
@@ -70,7 +70,7 @@ while not que.empty():
         if field[next_y][next_x] == "#" : continue #壁
         if dist[next_y][next_x] != -1 : continue #訪問済み
         dist[next_y][next_x] = dist[cur_y][cur_x] + 1
-        que.put((next_y,next_x))
+        dq.append((next_y,next_x))
 
 print(dist)
 
@@ -366,25 +366,25 @@ prime_factorize(111111111111111111)
 
 #====================================================================================
 
-#逆元, nCk, nCr
-n = 10 ** 9
-k = 2 * 10 ** 5
-mod = 10**9 + 7
+#逆元, nCk, nCr mod p
+def cmb(n, r, p):
+    if (r < 0) or (n < r):
+        return 0
+    r = min(r, n - r)
+    return fact[n] * factinv[r] * factinv[n-r] % p
+
+p = 10 ** 9 + 7
+N = 10 ** 6  # N は必要分だけ用意する
+fact = [1, 1]
+factinv = [1, 1]
+inv = [0, 1]
  
-modinv_table = [-1] * (k+1)
-modinv_table[1] = 1
-for i in range(2, k+1):
-    modinv_table[i] = (-modinv_table[mod % i] * (mod // i)) % mod
+for i in range(2, N + 1):
+    fact.append((fact[-1] * i) % p)
+    inv.append((-inv[p % i] * (p // i)) % p)
+    factinv.append((factinv[-1] * inv[-1]) % p)
 
-def binomial_coefficients(n, k):
-    ans = 1
-    for i in range(k):
-        ans *= n-i
-        ans *= modinv_table[i + 1]
-        ans %= mod
-    return ans
-
-binomial_coefficients(99,3)
+print(cmb(n, r, p))
 
 #====================================================================================
 
@@ -955,6 +955,8 @@ class Solution:
 #====================================================================================
 # 強連結成分分解
 from collections import defaultdict
+import sys
+sys.setrecursionlimit(10**9)
 def SCC(N, G, rG):
     group_num = 0
     visited_order = []
@@ -1000,7 +1002,7 @@ def SCC(N, G, rG):
 
 G = [[1],[2],[3,5,8],[4,5],[1],[6],[8],[6],[7]]
 N = 9
-groups, graph = SCC(9,G)
+groups, graph = SCC(9,G,rG)
 print(groups)
 print(graph)
 
