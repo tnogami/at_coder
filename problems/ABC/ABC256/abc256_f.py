@@ -50,9 +50,9 @@ BIT2 = Bit(N+2) #i*Ai
 BIT3 = Bit(N+2) #i**2*Ai
 
 for i, a in enumerate(A):
-    BIT1.add(i+1, a%MOD)
-    BIT2.add(i+1, (i+1)*a%MOD)
-    BIT3.add(i+1, (i+1)**2*a%MOD)
+    BIT1.add(i+1, a)
+    BIT2.add(i+1, (i+1)*a)
+    BIT3.add(i+1, (i+1)**2*a)
 
 for _ in range(Q):
     query = list(map(int,input().split()))
@@ -73,7 +73,4 @@ for _ in range(Q):
         v2 = (-2*x-3) * BIT2.sum(x+1)
         v3 = BIT3.sum(x+1)
 
-        if (v1+v2+v3)%2 == 0:
-            print(((v1+v2+v3)//2)%MOD)
-        else:
-            print(((v1+v2+v3+MOD)//2)%MOD)
+        print(((v1+v2+v3)//2)%MOD)
