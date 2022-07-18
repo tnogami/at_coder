@@ -200,7 +200,7 @@ class UnionFind():
     def same(self, x, y):
         return self.find(x) == self.find(y)
 
-    def members(self, x):
+    def members(self, x): #結構遅い
         root = self.find(x)
         return [i for i in range(self.n) if self.find(i) == root]
 
