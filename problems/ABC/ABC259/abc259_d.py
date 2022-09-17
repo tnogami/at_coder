@@ -1,37 +1,63 @@
+from collections import defaultdict
+def f(i,j):
+    ax, ay, ar = XYR[i]
+    bx, by, br = XYR[j]
+    d = (ax-bx)**2 + (ay-by)**2
+    L = (ar+br)**2
+    l = (ar-br)**2
+    if l <= d <= L:
+        return True
+    else:
+        return False
+
+class UnionFind():
+    def __init__(self, n):
+        self.n = n
+        self.parents = [-1] * n
+
+    def find(self, x):
+        if self.parents[x] < 0:
+            return x
+        else:
+            self.parents[x] = self.find(self.parents[x])
+            return self.parents[x]
+
+    def union(self, x, y):
+        x = self.find(x)
+        y = self.find(y)
+
+        if x == y:
+            return
+
+        if self.parents[x] > self.parents[y]:
+            x, y = y, x
+
+        self.parents[x] += self.parents[y]
+        self.parents[y] = x
+
+    def size(self, x):
+        return -self.parents[self.find(x)]
+
+    def same(self, x, y):
+        return self.find(x) == self.find(y)
+
 from itertools import combinations
 N = int(input())
 sx, sy, tx, ty = map(int, input().split())
 
 XYR = [tuple(map(int, input().split())) for _ in range(N)]
+XYR.append((sx,sy,0))
+XYR.append((tx,ty,0))
 
-nodes = [[] for _ in range(N)]
+uf = UnionFind(N+2)
 
-for i, j in combinations(range(N), 2):
-    x1 = XYR[i][0]
-    y1 = XYR[i][1]
-    r1 = XYR[i][2]
-    x2 = XYR[j][0]
-    y2 = XYR[j][1]
-    r2 = XYR[j][2]
-    d2 = (x1-x2)**2 + (y1-y2)**2
-    if abs(r1-r2)**2 <= d2 and d2 <= (r1+r2)**2:
-        nodes[i].append(j)
-        nodes[j].append(i)
+for i,j in combinations(range(N+2), 2):
+    if f(i,j):
+        uf.union(i,j)
 
-print(nodes)
-
-goal = []
-start = []
-for i in range(N):
-    x, y, r = XYR[i]
-    if (sx-x)**2 + (sy-y)**2 == r**2:
-        start.append(i)
-    
-    if (tx-x)**2 + (ty-y)**2 == r**2:
-        goal.append(i)
-
-for s in start:
-    
-
+if uf.same(N,N+1):
+    print("Yes")
+else:
+    print("No")
 
 
