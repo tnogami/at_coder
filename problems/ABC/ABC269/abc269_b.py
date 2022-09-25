@@ -12,5 +12,5 @@ for i in range(9, -1, -1):
             b = i+1
             d = j+1
 
-print(a,b)
-print(c,d)
+print(b,a)
+print(d,c)

@@ -1,41 +1,35 @@
-
-# def cal_nex(S):
-#     ret = [[N]*26 for i in range(N+1)]
-
-#     for i in range(N-1, -1, -1):
-#         for j in range(26):
-#             ret[i][j] = ret[i+1][j]
-        
-#         idx = ord(S[i]) - ord("a")
-#         ret[i][idx] = i
-
-#     return ret
-
+from collections import deque
 N, K = map(int, input().split())
 S = input()
+d = dict()
 
-dp = [[[] for _ in range(26)] for _ in range(N+1)]
+for i, c in enumerate(S):
+    if c in d:
+        d[c].append(i)
+    else:
+        d[c] = deque([i])
 
-for n in range(N):
-    for i in range(26):
-        # dp[n+1][i] = [c for c in dp[n][i]]
-        dp[n+1][i] = dp[n][i]
-        if ord(S[n])-ord("a") <= i:
-            dp[n+1][i].append(S[n])
+l = []
+for key, val in d.items():
+    l.append({"char":key, "que":val})
 
+l.sort(key=lambda x:x["char"])
+
+req_num = K
 ans = []
-for d in dp[-1]:
-    if K <= len(d):
-        ans.append("".join(d[:K]))
+last_idx = -1
+while req_num != 0:
+    for i in range(len(l)):
+        idx = l[i]["que"].popleft()
+        if N-idx-1 < req_num - 1:
+            l[i]["que"].appendleft(idx)
+            continue
+        else:
+            if last_idx < idx:
+                ans.append(l[i]["char"])
+                last_idx = idx
+                req_num -= 1
+            if not l[i]["que"] : l.pop(i)
+            break
 
-ans.sort()
-print(ans)
-print(ans[0])
-
-
-
-
-
-
-
-
+print("".join(ans))
