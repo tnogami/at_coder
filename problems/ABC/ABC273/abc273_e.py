@@ -35,6 +35,5 @@ for query in queries:
             cursor = 0
     ans.append(nodes[cursor])
 
-
 print(*ans)
 
