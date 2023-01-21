@@ -12,14 +12,12 @@ for i in range(2**N): #01の組み合わせ
 #====================================================================================
 
 #幅優先探索(グラフ)
-
-import queue
+from collections import deque
 
 N = int(input())
 M = int(input())
-dist = [-1 for i in range(N)] #距離
-que = queue.Queue()
-nodes = [[] for i in range(N)]
+A = list(map(int,input().split()))
+nodes = [[] for _ in range(N)]
 
 #nodeの入力
 for i in range(M):
@@ -27,20 +25,23 @@ for i in range(M):
     nodes[a-1].append(b-1)
     nodes[b-1].append(a-1)
 
+dist = [-1 for i in range(N)] #距離
+
+dq = deque()
+
 # 始点の設定
-que.put(0)
+dq.append(0)
 dist[0] = 0
 
 #キューが無くなるまでループ
-while not que.empty():
-    cur = que.get()
+while dq:
+    cur = dq.popleft()
     
     for next_node in nodes[cur]:
         if dist[next_node] != -1 : continue
-        que.put(next_node)
+        dq.append(next_node)
         dist[next_node] = dist[cur] + 1
 
-print(dist)
 
 #====================================================================================
 
@@ -223,6 +224,8 @@ uf.union(a, b) #辺を追加
 #====================================================================================
 
 #ワーシャル・フロイド法
+# float('INF')は遅いので10**15とかにしたほうが良い
+# 3000msの制限の問題で2200ms->800msになった
 
 N = int(input())
 M = int(input())
