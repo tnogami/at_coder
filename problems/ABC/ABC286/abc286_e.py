@@ -47,7 +47,7 @@
 N = int(input())
 A = list(map(int,input().split()))
 
-dist = [[float("INF")]*N for i in range(N)]
+dist = [[10**15]*N for i in range(N)]
 price = [[0]*N for i in range(N)]
 for n in range(N):
     for m in range(N):
@@ -66,7 +66,7 @@ for k in range(N):
     for i in range(N):
         for j in range(N):
             if i == j or j == k or k == i : continue
-            if dist[i][j] == dist[i][k]+dist[k][j] and dist[i][j] != float('INF'):
+            if dist[i][j] == dist[i][k]+dist[k][j] and dist[i][j] != 10**15:
                 price[i][j] = max(price[i][j], price[i][k]+price[k][j] - A[k])
             elif dist[i][j] < dist[i][k]+dist[k][j]:
                 continue
@@ -79,7 +79,7 @@ for _ in range(Q):
     U, V = map(int, input().split())
     U -= 1
     V -= 1
-    if dist[U][V] == float('INF'):
+    if dist[U][V] == 10**15:
         print('Impossible')
     else:
         print(dist[U][V], price[U][V])
