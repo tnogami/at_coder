@@ -1068,6 +1068,38 @@ def is_bipartite():
     return ret
 
 #====================================================================================
+# トポロジカルソート
+# DAGで有ることは前提として、hqを用いて辞書順最小のリストを返す
+
+from heapq import heappop, heappush
+
+N, M = map(int, input().split())
+
+out_list = [set() for _ in range(N)]
+in_list = [set() for _ in range(N)]
+inc = [0]*N
+XY = set([tuple(map(int, input().split())) for _ in range(M)])
+for x, y in XY:
+    x -= 1
+    y -= 1
+    out_list[x].add(y)
+    inc[y] += 1
+
+S = []
+L = [] 
+for i, c in enumerate(inc):
+    if c == 0:
+        heappush(S, i)
+
+while S:
+    n = heappop(S)
+    L.append(n)
+    for m in out_list[n]:
+        inc[m] -= 1
+        if inc[m] == 0:
+            heappush(S, m)
+
+print(L)
 #====================================================================================
 
             
