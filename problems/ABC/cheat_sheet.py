@@ -1101,5 +1101,31 @@ while S:
 
 print(L)
 #====================================================================================
+# 巡回セールスマン問題（bitDP）
+# O(2**N * N**2)
+# スタートとゴールが別にあり、スタートから各ノードを巡回する問題
+INF = 10**18
 
-            
+V = 18 #ノード数
+E = V*(V-1)//2 # エッジ数
+G = [[INF]*V for _ in range(V)] # 存在しないパスはinfになるように、最初にすべてinfにしておく
+for i in range(E): # 各ノード間の距離入力
+    s,t,d = map(int,input().split())
+    G[s][t] = d # s,tは0以上V-1以下なので、デクリメントの必要はない
+
+# スタートから各ノードへのコストはゼロ
+goal2node = [0]*V
+start2node = [0]*V
+
+dp = [[INF]*V for i in range(2**V)] # dpの長さは2^V必要
+
+for S in range(2**V): # Sは集合をbitで表している
+    for v in range(V): # vは配られる側の要素を表している
+        for u in range(V): # uは配る側の要素を表している
+            if S == 0: # 開始点はスタートからvへのコスト
+                dp[1 << v][v] = start2node[v]
+                continue
+            if ((S >> u) & 1) and (((S >> v) & 1) == 0) : # 配る側のuが1で配られる側が0の場合のみ遷移する
+                if dp[S][u] + G[u][v] < dp[S | (1 << v)][v]:
+                    dp[S | (1 << v)][v] = dp[S][u] + G[u][v] # ③
+
