@@ -1238,7 +1238,6 @@ def is_inside_triangle(x1, y1, x2, y2, x3, y3, px, py):
 # ソートのキーを渡す
 # ここでは分数のソートを行う
 
-
 def cmp(a, b):  # a = [x_a, y_a], b = [x_b / y_b]
     # 比較対象の分数 a と b が等しければ 0 を返す
     if a[0] * b[1] == b[0] * a[1]:
