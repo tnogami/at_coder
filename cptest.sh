@@ -16,7 +16,7 @@ fi
 if [ "$which_python" = "python3" ]; then
     echo python
     # oj test -c "python3 ${problem_path}/${problem_name}.py" -d test/${problem_name}
-    oj test -c "python3 ${problem_path}" -d test/${problem_name}
+    oj test -c "python3 \"${problem_path}\"" -d test/"${problem_name}"
 elif [ "$which_python" = "pypy3" ]; then
     echo pypy
     oj test -c "pypy3 ${problem_path}/${problem_name}.py" -d test/${problem_name}
