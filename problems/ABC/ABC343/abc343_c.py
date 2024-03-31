@@ -14,5 +14,4 @@ for n in range(2, min(N+1, 10**6+5)):
         ans = k
         continue
 
-
 print(ans)
